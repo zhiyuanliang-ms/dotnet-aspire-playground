@@ -1,0 +1,6 @@
+@KvServer_HostAddress = http://localhost:5073
+
+GET {{KvServer_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
