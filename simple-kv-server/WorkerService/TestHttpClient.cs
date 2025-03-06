@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WorkerService
+﻿namespace WorkerService
 {
     public class TestHttpClient(HttpClient client)
     {
+        public async Task<string> GetKvAsync()
+        {
+            return await client.GetStringAsync("kv");
+        }
     }
 }

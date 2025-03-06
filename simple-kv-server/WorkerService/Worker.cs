@@ -7,25 +7,18 @@ public class Worker : BackgroundService
 {
     private readonly ILogger<Worker> _logger;
     private readonly IConfiguration _configuration;
-    private readonly HttpClient _httpClient;
+    private readonly TestHttpClient _client;
 
-    public Worker(ILogger<Worker> logger, IConfiguration configuration, HttpClient httpClient)
+    public Worker(ILogger<Worker> logger, IConfiguration configuration, TestHttpClient client)
     {
         _logger = logger;
         _configuration = configuration;
-        _httpClient = httpClient;
+        _client = client;
     }
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        if (_httpClient != null)
-        {
-            Console.WriteLine("YES");
-
-            var res = await _httpClient.GetStringAsync("kv");
-
-            Console.WriteLine(res);
-        }
+        Console.WriteLine(await _client.GetKvAsync());
 
         while (!stoppingToken.IsCancellationRequested)
         {
