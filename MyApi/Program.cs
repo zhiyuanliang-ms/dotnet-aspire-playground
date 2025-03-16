@@ -137,12 +137,20 @@ app.MapGet("/", async (HttpContext context) =>
     ");
 });
 
-app.MapGet("/kv", (ConcurrentDictionary<string, ConfigurationSetting> store) =>
+app.MapGet("/kv", (ConcurrentDictionary<string, ConfigurationSetting> store, HttpContext httpContext) =>
 {
-    return new KeyValueResponse(store.Values);
+    string etag = $"\"{DateTime.Now.ToString()}\"";
+    httpContext.Response.Headers.Append("etag", etag);
+
+    var response = new
+    {
+        items = store.Values
+    };
+
+    return Results.Ok(response);
 });
 
-app.MapGet("/kv/{key}", (string key, ConcurrentDictionary<string, ConfigurationSetting> store) =>
+app.MapGet("/kv/{*key}", (string key, ConcurrentDictionary<string, ConfigurationSetting> store) =>
 {
     if (store.TryGetValue(key, out var setting))
     {
@@ -161,11 +169,10 @@ app.MapPost("/kv", (ConfigurationSetting newSetting, ConcurrentDictionary<string
     return Results.Created($"/kv/{newSetting.Key}", newSetting);
 });
 
-app.MapPut("/kv/{key}", (string key, ConfigurationSetting updatedSetting, ConcurrentDictionary<string, ConfigurationSetting> store) =>
+app.MapPut("/kv/{*key}", (string key, ConfigurationSetting updatedSetting, ConcurrentDictionary<string, ConfigurationSetting> store) =>
 {
     if (key != updatedSetting.Key)
     {
-        Console.WriteLine("YES");
         return Results.BadRequest("Key in URL doesn't match request body.");
     }
 
@@ -173,7 +180,7 @@ app.MapPut("/kv/{key}", (string key, ConfigurationSetting updatedSetting, Concur
     return Results.Ok(updatedSetting);
 });
 
-app.MapDelete("/kv/{key}", (string key, ConcurrentDictionary<string, ConfigurationSetting> store) =>
+app.MapDelete("/kv/{*key}", (string key, ConcurrentDictionary<string, ConfigurationSetting> store) =>
 {
     if (store.TryRemove(key, out _))
     {
@@ -183,5 +190,3 @@ app.MapDelete("/kv/{key}", (string key, ConcurrentDictionary<string, Configurati
 });
 
 app.Run();
-
-record KeyValueResponse(IEnumerable<ConfigurationSetting> Items);
