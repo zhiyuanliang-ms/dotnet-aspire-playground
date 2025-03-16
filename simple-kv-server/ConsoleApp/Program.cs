@@ -23,11 +23,11 @@ namespace ConsoleApp
     {
         static async Task Main(string[] args)
         {
-            var fakeEndpoint = new Uri("https://localhost:7242");
+            var fakeEndpoint = new Uri("http://localhost:7099");
             var credential = new EmptyTokenCredential();
             //var credential = new DefaultAzureCredential(); // fail
 
-            var fakeConnectionString = "Endpoint=https://localhost:7242;Id=xxxx;Secret=xxxx";
+            var fakeConnectionString = "Endpoint=https://localhost:7099;Id=xxxx;Secret=xxxx";
 
             //var client = new ConfigurationClient(fakeEndpoint, credential);
 
@@ -53,15 +53,15 @@ namespace ConsoleApp
 
             }
 
-            var builder = new ConfigurationBuilder();
-            builder.AddAzureAppConfiguration(options =>
-            {
-                options.Connect(fakeConnectionString);
-            });
-            var config = builder.Build();
-            var key = "message";
-            Console.WriteLine("Key values from provider:");
-            Console.WriteLine($"{key}: {config[key]}");
+            //var builder = new ConfigurationBuilder();
+            //builder.AddAzureAppConfiguration(options =>
+            //{
+            //    options.Connect(fakeConnectionString);
+            //});
+            //var config = builder.Build();
+            //var key = "message";
+            //Console.WriteLine("Key values from provider:");
+            //Console.WriteLine($"{key}: {config[key]}");
         }
     }
 }
